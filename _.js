@@ -79,12 +79,12 @@ const _ = {
         
         let startPaddingLength = Math.floor((length - string.length)/ 2);
         let endPaddingLength = length - string.length - startPaddingLength;
-        console.log(startPaddingLength);
-        console.log(endPaddingLength);
+        // console.log(startPaddingLength);
+        // console.log(endPaddingLength);
         let rightPaddingString = '';
         let leftPaddingString = '';
 
-        if (length <= string || startPaddingLength <= 0 || endPaddingLength <= 0) {
+        if (length <= string.length || startPaddingLength <= 0 || endPaddingLength <= 0) {
             return string;
         } 
 
@@ -100,13 +100,166 @@ const _ = {
 
         return  leftPaddingString +  string + rightPaddingString;
  
+    },
+
+    // has(object, key) {
+    //     return object[key] ? true : false;
+    // },
+
+    // has(object, key) {
+    //     return !!object[key];
+    // },
+
+    has(object, key) {
+        let hasValue = true
+        if(object[key] === undefined) {
+            hasValue = false;
+        }
+        return hasValue;
+    },
+
+    // has(object, key) {
+    //     return object.hasOwnProperty(key);
+    // },
+
+    // invert(object) {
+
+    //     for(let [key, value] of Object.entries(object)) {
+    //         return [key, value] = [value, key];
+    //     }
+    // }, // This doesn't work like I want.
+
+    //Invert and object - {key: value}  to  {value: key}
+    invert(object) {
+        const invertedObject = {};
+
+        for(const key in object) { // Iterates through every key/value pair or property
+            const originalValue = object[key]; // Gives the new const a value of "value", since we wrote [key]
+            // console.log(originalValue);
+            invertedObject[originalValue] = key;
+            // invertedObject.originalValue = key;  //OriginalValue will not be read, no need to delare it..
+            // invertedObject = {originalValue: key}; // Only works with let
+        }
+        return invertedObject;
+    },
+    // Finds the key in the object with the truthy value.
+    findKey(object, predicate) {
+        for (const key in object) {
+            if(object.hasOwnProperty(key)) { //So you need to make your for...in loop safe using hasOwnProperty check. To prevent looking into the prototype of that parent object.
+                const value = object[key];
+                const predicateReturnValue = predicate(value);
+                if(predicateReturnValue) {
+                    return key;
+                } 
+            }
+        }
+        return undefined;
+    },
+//Items to drop from the beginning of the array.
+    drop(array, numberItems) {
+        if(typeof numberItems !== 'number'){
+            if(numberItems === undefined) {
+                numberItems = 1;
+            }
+        }
+        const droppedArray = array.slice(numberItems, array.length);
+        return droppedArray;
+    },
+
+    // dropWhile(array, predicate) {
+    //     const dropNumber = array.findIndex((element, index) => {
+    //         const currentElement = element;
+    //         // console.log("Current Element", currentElement)
+    //         const currentIndex = index;
+    //         // console.log("Current Index", currentIndex);
+    //         const predicateArray = predicate(currentElement, currentIndex, array);
+    //         // console.log("Boolean Value", predicateArray);
+    //         if(!predicateArray) {
+    //             return index;
+    //         }
+    //     });
+
+    //     const droppedArray = this.drop(array, dropNumber)
+        
+    //     return droppedArray;
+    // },
+    // dropWhile(array, predicate) {
+    //     let index;
+    //     for (let i = 0; i < array.length; i++) {
+    //         if(!predicate(array[i], i, array)) {
+    //             index = i;
+    //             console.log(array[i], index);
+    //         } 
+    //     }
+    //     const droppedArray = this.drop(array, index);
+    //     return droppedArray;
+    // },
+
+    dropWhile(array, predicate) {
+        let index = 0;
+        while(predicate(array[index], index, array)) {
+            index +=1
+        }
+        return this.drop(array, index);
+    },
+
+    // dropWhile(array, predicate) {
+    //     const cb = (element, index) => {
+    //         return !predicate(element, index, array);
+    //     };
+    //     let dropNumber = array.findIndex(cb);
+    //     let droppedArray = this.drop(array, dropNumber);
+    //     return droppedArray;
+    // }
+
+    // chunk(array, size = 1) {
+    //     // if(typeof size !== 'number'){
+    //     //     if(size === undefined) {
+    //     //         size = 1;
+    //     //     } 
+    //     // }
+    //     const arrayChunks = [];
+    //     let index = 0;
+    //     while(index < array.length) {
+
+    //         let arrayChunk = array.slice(index, index+size);
+    //         console.log(arrayChunk);
+    //         index += size;
+    //         arrayChunks.push(arrayChunk);
+    //     }
+
+    //     return arrayChunks;
+    // },
+
+    chunk(array, size) {
+        if(typeof size !== 'number'){
+            if(size === undefined) {
+                size = 1;
+            } 
+        }
+        let arrayChunks = [];
+   
+        for (let i = 0; i < array.length; i+=size) {
+
+            let arrayChunk = array.slice(i, i+size);
+            // console.log(arrayChunk);
+            arrayChunks.push(arrayChunk);
+        }
+        return arrayChunks;
     }
-};
 
 
-console.log(_.pad('hi', 5));
+}
 
 
+// console.log(_.pad('hi', 5));
+// console.log(_.invert({mykey: 'myvalue'}));
+
+// const isMorethanFour = (num) => num < 4; 
+
+// console.log(_.dropWhile([1, 2, 3, 4, 5, 6], isMorethanFour));
+
+console.log(_.chunk([1,2,3,4,5,6,7], 3))
 
 // Do not write or modify code below this line.
 module.exports = _;
